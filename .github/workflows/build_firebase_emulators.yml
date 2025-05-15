@@ -1,0 +1,20 @@
+name: build firebase-emulators
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'images/firebase-emulators/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: set up docker buildx
+        uses: docker/setup-buildx-action@v3
+      - name: build docker image
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 \
+            images/firebase-emulators
