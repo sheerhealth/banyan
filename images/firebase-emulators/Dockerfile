@@ -1,9 +1,10 @@
 FROM alpine
 
-ARG FIREBASE_TOOLS_VERSION=14.2.1
-
 RUN apk --no-cache add nodejs npm openjdk17-jre-headless
 ENV NODE_ENV=production
+
+ARG FIREBASE_TOOLS_VERSION=latest
+
 RUN npm install -g firebase-tools@${FIREBASE_TOOLS_VERSION} && \
     npm cache clean --force
 
