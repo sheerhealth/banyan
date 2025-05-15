@@ -1,0 +1,20 @@
+# Build Firebase Emulators Docker image for all provided platforms.
+
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    id: setup-buildx
+    args: ['buildx', 'create', '--driver', 'docker-container', '--name', 'container', '--use']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: build-image
+    args: ['buildx', 'build', '--platform=${_PLATFORMS}', '--tag=${_IMAGE_NAME}:${_TAG}', '--build-arg=FIREBASE_TOOLS_VERSION=${_VERSION}', '--push', '.' ]
+
+substitutions:
+  _PLATFORMS: 'linux/amd64,linux/arm64'
+  _IMAGE_NAME: '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/artifacts/firebase-emulators'
+  _TAG: 'latest'
+  _VERSION: 'latest'
+
+options:
+  substitution_option: 'ALLOW_LOOSE'
+  dynamicSubstitutions: true
