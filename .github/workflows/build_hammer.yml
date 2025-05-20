@@ -1,4 +1,4 @@
-name: build hammer
+name: hammer
 
 on:
   pull_request:
@@ -6,15 +6,26 @@ on:
       - main
     paths:
       - 'images/hammer/**'
+  push:
+    tags:
+      - 'hammer/**'
 
 jobs:
-  build:
+  build-and-push:
+    name: Build and Push Hammer Image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - uses: actions/checkout@v4
-      - name: set up docker buildx
-        uses: docker/setup-buildx-action@v3
-      - name: build docker image
-        run: |
-          docker buildx build --platform linux/amd64,linux/arm64 \
-            images/hammer
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and Push Hammer
+        uses: ./.github/actions/docker-build-push
+        with:
+          image_name: 'hammer'
+          context_path: './images/hammer'
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
+          do_push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/hammer/') }}
+          git_tag_prefix_for_version: 'hammer/'

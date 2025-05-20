@@ -1,20 +1,31 @@
-name: build firebase-emulators
+name: firebase-emulators
 
 on:
   pull_request:
     branches:
       - main
     paths:
-      - 'images/firebase-emulators/**'
+      - 'images/hammer/**'
+  push:
+    tags:
+      - 'hammer/**'
 
 jobs:
-  build:
+  build-and-push:
+    name: Build and Push Hammer Image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - uses: actions/checkout@v4
-      - name: set up docker buildx
-        uses: docker/setup-buildx-action@v3
-      - name: build docker image
-        run: |
-          docker buildx build --platform linux/amd64,linux/arm64 \
-            images/firebase-emulators
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and Push
+        uses: ./.github/actions/docker-build-push
+        with:
+          image_name: 'firebase-emulators'
+          context_path: './images/firebase-emulators'
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
+          do_push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/firebase-emulators/') }}
+          git_tag_prefix_for_version: 'firebase-emulators/'
