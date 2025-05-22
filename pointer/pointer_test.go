@@ -76,12 +76,16 @@ func TestValuesOrDefaults(t *testing.T) {
 	const count = 10
 
 	in := make([]*int, 0, count)
-
 	want := make([]int, 0, count)
 
 	for i := range count {
-		in = append(in, To(i))
-		want = append(want, i)
+		if i%2 == 0 {
+			in = append(in, nil)
+			want = append(want, 0)
+		} else {
+			in = append(in, To(i))
+			want = append(want, i)
+		}
 	}
 
 	got := ValuesOrDefaults(in)
