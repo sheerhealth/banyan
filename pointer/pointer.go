@@ -21,7 +21,7 @@ func OrDefault[T any](v *T) T {
 	return *v
 }
 
-// To the pointer of the given constant value.
+// To returns a pointer to the given value.
 func To[T any](v T) *T {
 	return &v
 }
