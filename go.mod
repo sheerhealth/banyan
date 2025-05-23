@@ -1,1 +1,1 @@
-module github.com/SheerHealth/banyan
+module github.com/sheerhealth/banyan
