@@ -1,0 +1,25 @@
+version: "2"
+run:
+  timeout: 5m
+  allow-parallel-runners: true
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - golines
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/sheerhealth)
+    gofmt:
+      rewrite-rules:
+        - pattern: 'interface{}'
+          replacement: 'any'
+        - pattern: 'a[b:len(a)]'
+          replacement: 'a[b:]'
+    gofumpt:
+      module-path: github.com/sheerhealth/banyan
+      extra-rules: true
