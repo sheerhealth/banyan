@@ -25,7 +25,7 @@ inputs:
     required: false
     default: ${{ github.actor }}
   registry_password:
-    description: 'Password or token for the container registry. Typically ${{ secrets.GITHUB_TOKEN }} for GHCR.'
+    description: 'Password or token for the container registry. Typically secrets.GITHUB_TOKEN for GHCR.'
     required: true
   do_push:
     description: "Whether to push the image. Should be a string 'true' or 'false' from an expression."

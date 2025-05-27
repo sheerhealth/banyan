@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'images/hammer/**'
+      - '.github/actions/docker-build-push/**'
+      - '.github/workflows/hammer.yml'
   push:
     tags:
       - 'hammer/**'
