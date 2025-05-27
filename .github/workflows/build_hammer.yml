@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-and-push:
-    name: Build and Push Hammer Image
+    name: build and push
     runs-on: ubuntu-latest
     permissions:
       contents: read
