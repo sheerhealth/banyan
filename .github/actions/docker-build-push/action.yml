@@ -65,7 +65,7 @@ runs:
       uses: docker/build-push-action@v5
       with:
         context: ${{ inputs.context_path }}
-        file: ${{ inputs.dockerfile_path }}
+        file: ${{ inputs.context_path }}/${{ inputs.dockerfile_path }}
         platforms: ${{ inputs.platforms }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
