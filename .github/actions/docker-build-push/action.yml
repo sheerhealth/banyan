@@ -25,7 +25,7 @@ inputs:
     required: false
     default: ${{ github.actor }}
   registry_password:
-    description: 'Password or token for the container registry. Typically ${{ secrets.GITHUB_TOKEN }} for GHCR.'
+    description: 'Password or token for the container registry. Typically secrets.GITHUB_TOKEN for GHCR.'
     required: true
   do_push:
     description: "Whether to push the image. Should be a string 'true' or 'false' from an expression."
@@ -34,6 +34,10 @@ inputs:
     description: 'Git tag prefix to strip for Docker tag version (e.g., hammer/). Include trailing slash. Use empty string if tags are direct versions like v1.0.0.'
     required: false
     default: ''
+  image_description:
+    description: 'Description for the Docker image, used in OCI labels.'
+    required: false
+    default: 'Container image built by GitHub Actions.'
 
 runs:
   using: 'composite'
@@ -54,6 +58,12 @@ runs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ inputs.registry }}/${{ github.repository_owner }}/${{ inputs.image_name }}
+        annotations: |
+          org.opencontainers.image.title=${{ inputs.image_name }}
+          org.opencontainers.image.description=${{ inputs.image_description }}
+        labels: |
+          org.opencontainers.image.title=${{ inputs.image_name }}
+          org.opencontainers.image.description=${{ inputs.image_description }}
         tags: |
           type=ref,event=pr
           type=sha,prefix=pr-,suffix=,event=pr,format=short
@@ -65,7 +75,7 @@ runs:
       uses: docker/build-push-action@v5
       with:
         context: ${{ inputs.context_path }}
-        file: ${{ inputs.dockerfile_path }}
+        file: ${{ inputs.context_path }}/${{ inputs.dockerfile_path }}
         platforms: ${{ inputs.platforms }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
