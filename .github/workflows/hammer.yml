@@ -23,6 +23,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Determine Hammer Version
+        id: hammer_version_step
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "version=latest" >> "$GITHUB_OUTPUT"
+          else
+            # This block executes on a push event matching tags: ['hammer/**']
+            # github.ref_name will be like "hammer/v1.2.3"
+            RAW_TAG="${{ github.ref_name }}"
+            VERSION="${RAW_TAG#hammer/}" # Shell parameter expansion
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build and Push Hammer
         uses: ./.github/actions/docker-build-push
         with:
@@ -32,3 +46,5 @@ jobs:
           registry_password: ${{ secrets.GITHUB_TOKEN }}
           do_push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/hammer/') }}
           git_tag_prefix_for_version: 'hammer/'
+          dependency_build_arg_name: 'HAMMER_VERSION'
+          dependency_build_arg_value: ${{ steps.hammer_version_step.outputs.version }}
