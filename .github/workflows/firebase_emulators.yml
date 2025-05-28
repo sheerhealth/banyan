@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - 'images/hammer/**'
+      - 'images/firebase-emulators/**'
       - '.github/actions/docker-build-push/**'
       - '.github/workflows/firebase_emulators.yml'
   push:
     tags:
-      - 'hammer/**'
+      - 'firebase-emulators/**'
 
 jobs:
   build-and-push:
@@ -23,6 +23,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Determine Firebase Emulators Version
+        id: firebase_emulators_version_step
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "version=latest" >> "$GITHUB_OUTPUT"
+          else
+            # This block executes on a push event matching tags: ['firebase-emulators/**']
+            # github.ref_name will be like "firebase-emulators/v0.5.0"
+            RAW_TAG="${{ github.ref_name }}"
+            VERSION="${RAW_TAG#firebase-emulators/}" # Shell parameter expansion
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build and Push
         uses: ./.github/actions/docker-build-push
         with:
@@ -32,3 +46,5 @@ jobs:
           registry_password: ${{ secrets.GITHUB_TOKEN }}
           do_push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/firebase-emulators/') }}
           git_tag_prefix_for_version: 'firebase-emulators/'
+          dependency_build_arg_name: 'FIREBASE_TOOLS_VERSION'
+          dependency_build_arg_value: ${{ steps.firebase_emulators_version_step.outputs.version }}

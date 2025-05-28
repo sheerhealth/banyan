@@ -38,6 +38,14 @@ inputs:
     description: 'Description for the Docker image, used in OCI labels.'
     required: false
     default: 'Container image built by GitHub Actions.'
+  dependency_build_arg_name:
+    description: 'Name of the Dockerfile ARG for a dependency version (e.g., MY_DEPENDENCY_VERSION_ARG). Optional.'
+    required: false
+    default: ''
+  dependency_build_arg_value:
+    description: 'Value for the dependency version ARG (e.g., latest, 1.2.3). Used if dependency_build_arg_name is also set. Optional.'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -80,5 +88,7 @@ runs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         push: ${{ inputs.do_push == 'true' }}
+        build-args: |
+          ${{ inputs.dependency_build_arg_name != '' && format('{0}={1}', inputs.dependency_build_arg_name, inputs.dependency_build_arg_value) }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
