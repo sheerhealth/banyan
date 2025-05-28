@@ -6,7 +6,7 @@ inputs:
     description: 'Base name of the Docker image (e.g., hammer, firebase-emulators)'
     required: true
   context_path:
-    description: 'Path to the Docker build context relative to repository root (e.g., ./images/hammer)'
+    description: 'Path to the Docker build context relative to repository root (e.g., images/hammer)'
     required: true
   dockerfile_path:
     description: 'Path to the Dockerfile relative to the build context (e.g., Dockerfile or custom/Dockerfile.dev). Default is Dockerfile in context_path.'
@@ -69,9 +69,15 @@ runs:
         annotations: |
           org.opencontainers.image.title=${{ inputs.image_name }}
           org.opencontainers.image.description=${{ inputs.image_description }}
+          org.opencontainers.image.vendor=SheerHealth
+          org.opencontainers.image.source=https://github.com/${{ github.repository }}/${{ inputs.context_path }}
+          org.opencontainers.image.url=https://github.com/${{ github.repository }}/tree/main/${{ inputs.context_path }}
         labels: |
           org.opencontainers.image.title=${{ inputs.image_name }}
           org.opencontainers.image.description=${{ inputs.image_description }}
+          org.opencontainers.image.vendor=SheerHealth
+          org.opencontainers.image.source=https://github.com/${{ github.repository }}/tree/main/${{ inputs.context_path }}
+          org.opencontainers.image.url=https://github.com/${{ github.repository }}/tree/main/${{ inputs.context_path }}
         tags: |
           type=ref,event=pr
           type=sha,prefix=pr-,suffix=,event=pr,format=short
@@ -82,8 +88,8 @@ runs:
     - name: Build and Push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: ${{ inputs.context_path }}
-        file: ${{ inputs.context_path }}/${{ inputs.dockerfile_path }}
+        context: ./${{ inputs.context_path }}
+        file: ./${{ inputs.context_path }}/${{ inputs.dockerfile_path }}
         platforms: ${{ inputs.platforms }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
