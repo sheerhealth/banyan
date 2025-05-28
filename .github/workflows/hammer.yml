@@ -27,6 +27,7 @@ jobs:
         uses: ./.github/actions/docker-build-push
         with:
           image_name: 'hammer'
+          image_description: 'Hammer CLI tool for Spanner migrations'
           context_path: './images/hammer'
           registry_password: ${{ secrets.GITHUB_TOKEN }}
           do_push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/hammer/') }}

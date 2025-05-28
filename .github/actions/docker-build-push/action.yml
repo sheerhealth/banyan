@@ -34,6 +34,10 @@ inputs:
     description: 'Git tag prefix to strip for Docker tag version (e.g., hammer/). Include trailing slash. Use empty string if tags are direct versions like v1.0.0.'
     required: false
     default: ''
+  image_description:
+    description: 'Description for the Docker image, used in OCI labels.'
+    required: false
+    default: 'Container image built by GitHub Actions.'
 
 runs:
   using: 'composite'
@@ -54,6 +58,9 @@ runs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ inputs.registry }}/${{ github.repository_owner }}/${{ inputs.image_name }}
+        labels: |
+          org.opencontainers.image.title=${{ inputs.image_name }}
+          org.opencontainers.image.description=${{ inputs.image_description }}
         tags: |
           type=ref,event=pr
           type=sha,prefix=pr-,suffix=,event=pr,format=short
