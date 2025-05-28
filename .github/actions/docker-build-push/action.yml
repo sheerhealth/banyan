@@ -93,6 +93,7 @@ runs:
         platforms: ${{ inputs.platforms }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        annotations: ${{ steps.meta.outputs.annotations }}
         push: ${{ inputs.do_push == 'true' }}
         build-args: |
           ${{ inputs.dependency_build_arg_name != '' && format('{0}={1}', inputs.dependency_build_arg_name, inputs.dependency_build_arg_value) }}
