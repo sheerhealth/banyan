@@ -12,8 +12,8 @@ on:
       - 'clamav/**'
 
 jobs:
-  build-and-push-clamav:
-    name: Build and Push ClamAV Scanner
+  build-and-push:
+    name: build and push
     runs-on: ubuntu-latest
     permissions:
       contents: read
