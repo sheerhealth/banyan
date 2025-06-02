@@ -1,0 +1,27 @@
+# Build ClamAV Docker image for all provided platforms.
+
+steps:
+  - name: gcr.io/cloud-builders/git
+    args:
+      - clone
+      - -b
+      - ${_TAG}
+      - 'https://github.com/GoogleCloudPlatform/docker-clamav-malware-scanner'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: setup-buildx
+    args: ['buildx', 'create', '--driver', 'docker-container', '--name', 'container', '--use']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: build-image
+    args: ['buildx', 'build', '--platform=${_PLATFORMS}', '--tag=${_IMAGE_NAME}:${_TAG}', '--push', '.' ]
+    dir: 'docker-clamav-malware-scanner/cloudrun-malware-scanner'
+
+substitutions:
+  _PLATFORMS: 'linux/amd64,linux/arm64'
+  _IMAGE_NAME: '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/artifacts/clamav'
+  _TAG: 'main'
+
+options:
+  substitution_option: 'ALLOW_LOOSE'
+  dynamicSubstitutions: true
