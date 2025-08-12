@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 go_library(
     name = "target_default_library",
     srcs = ["main.go"],
-    importpath = "github.com/GoogleCloudPlatform/cloud-builders/bazel/examples",
+    importpath = "github.com/sheerhealth/banyan/images/bazel/examples",
     visibility = ["//visibility:private"],
     deps = [],
 )
@@ -26,7 +26,7 @@ go_image(
 go_library(
     name = "checkargs_default_library",
     srcs = ["main_checkargs.go"],
-    importpath = "github.com/GoogleCloudPlatform/cloud-builders/bazel/examples",
+    importpath = "github.com/sheerhealth/banyan/images/bazel/examples",
     visibility = ["//visibility:private"],
     deps = [],
 )
