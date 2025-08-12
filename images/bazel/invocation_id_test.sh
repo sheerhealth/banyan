@@ -3,7 +3,7 @@
 cd examples
 
 if [[ ! -d "${BUILDER_OUTPUT}" ]] ; then
-  export BUILDER_OUTPUT="$(mkdir builderoutput)"
+  export BUILDER_OUTPUT="$(mktemp -d)"
 fi
 
 extract_output_id () {
