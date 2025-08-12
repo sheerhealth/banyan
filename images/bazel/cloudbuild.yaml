@@ -1,0 +1,27 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'build'
+  - '--build-arg=BAZEL_VERSION=7.6.1'
+  - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:latest'
+  - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6.1'
+  - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6'
+  - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7'
+  - '.'
+
+- name: 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:latest'
+  args: ['version']
+- name: 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6.1'
+  args: ['version']
+- name: 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6'
+  args: ['version']
+- name: 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7'
+  args: ['version']
+
+images:
+ - 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:latest'
+ - 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6.1'
+ - 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6'
+ - 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7'
+
+timeout: 2400s
