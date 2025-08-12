@@ -5,55 +5,60 @@ ARG BAZEL_VERSION=latest
 ARG DOCKER_VERSION=5:24.0.7-1~ubuntu.20.04~focal
 
 RUN \
-    # This makes add-apt-repository available.
-    apt-get update && \
-    apt-get -y install \
+    set -eux; \
+    apt-get update; \
+    apt-get -y install --no-install-recommends \
         python \
         python3 \
         python-pkg-resources \
         python3-pkg-resources \
         software-properties-common \
-        unzip && \
-
-    # Install Git >2.0.1
-    add-apt-repository ppa:git-core/ppa && \
-    apt-get -y update && \
-    apt-get -y install git && \
-
-    # Install bazel (https://docs.bazel.build/versions/master/install-ubuntu.html)
-    apt-get -y install openjdk-8-jdk && \
-    echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list && \
-    curl https://bazel.build/bazel-release.pub.gpg | apt-key add - && \
-    apt-get update && \
-
-    apt-get -y install bazel-${BAZEL_VERSION} && \
-    apt-get -y upgrade bazel-${BAZEL_VERSION} && \
-
-    ln -s /usr/bin/bazel-${BAZEL_VERSION} /usr/bin/bazel && \
-
-    # Install Docker (https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#uninstall-old-versions)
-    apt-get -y install \
-        apt-transport-https \
+        unzip \
+        gnupg \
         curl \
-        ca-certificates && \
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-    add-apt-repository \
-      "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-      $(lsb_release -cs) \
-      stable edge" && \
-    apt-get -y update && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y docker-ce=${DOCKER_VERSION} docker-ce-cli=${DOCKER_VERSION} unzip && \
+        ca-certificates \
+        apt-transport-https \
+        openjdk-8-jdk; \
+    \
+    # Install Git >2.0.1
+    add-apt-repository -y ppa:git-core/ppa; \
+    \
+    # Install bazel (https://docs.bazel.build/versions/master/install-ubuntu.html)
+    curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor -o /usr/share/keyrings/bazel-archive-keyring.gpg; \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] http://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list; \
+    \
+    # Install Docker (https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-repository)
+    mkdir -p /etc/apt/keyrings; \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg; \
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+      $(lsb_release -cs) stable edge" | tee /etc/apt/sources.list.d/docker.list > /dev/null; \
+    \
+    # Update apt repositories and install versioned software.
+    apt-get update; \
+    apt-get -y install --no-install-recommends git; \
+    if [ "${BAZEL_VERSION}" = "latest" ]; then \
+        apt-get -y install --no-install-recommends bazel; \
+    else \
+        apt-get -y install --no-install-recommends bazel-${BAZEL_VERSION}; \
+        ln -s /usr/bin/bazel-${BAZEL_VERSION} /usr/bin/bazel; \
+    fi; \
+    apt-get dist-upgrade -y; \
+    apt-get install -y --no-install-recommends docker-ce=${DOCKER_VERSION} docker-ce-cli=${DOCKER_VERSION}; \
+    \
+    # Clean up
+    apt-get autoremove -y; \
+    apt-get clean; \
     rm -rf \
        /var/cache/debconf/* \
        /var/lib/apt/lists/* \
        /var/log/* \
        /tmp/* \
-       /var/tmp/*  && \
-
-    mv /usr/bin/bazel /builder/bazel           && \
-    mv /builder/bazel.sh /usr/bin/bazel        && \
-
+       /var/tmp/*; \
+    \
+    mv /usr/bin/bazel /builder/bazel; \
+    mv /builder/bazel.sh /usr/bin/bazel; \
+    \
     # Unpack bazel for future use.
     bazel version
 

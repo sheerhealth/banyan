@@ -1,3 +1,6 @@
+//go:build checkargs
+// +build checkargs
+
 package main
 
 import (
