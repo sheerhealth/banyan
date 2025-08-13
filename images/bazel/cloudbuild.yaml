@@ -3,25 +3,28 @@ steps:
   args:
   - 'build'
   - '--build-arg=BAZEL_VERSION=7.6.1'
-  - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:latest'
-  - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6.1'
-  - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6'
-  - '--tag=us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7'
+  - '--tag=${_IMAGE_NAME}:latest'
+  - '--tag=${_IMAGE_NAME}:7.6.1'
+  - '--tag=${_IMAGE_NAME}:7.6'
+  - '--tag=${_IMAGE_NAME}:7'
   - '.'
 
-- name: 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:latest'
+- name: '${_IMAGE_NAME}:latest'
   args: ['version']
-- name: 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6.1'
+- name: '${_IMAGE_NAME}:7.6.1'
   args: ['version']
-- name: 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6'
+- name: '${_IMAGE_NAME}:7.6'
   args: ['version']
-- name: 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7'
+- name: '${_IMAGE_NAME}:7'
   args: ['version']
 
 images:
- - 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:latest'
- - 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6.1'
- - 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7.6'
- - 'us-central1-docker.pkg.dev/${PROJECT_ID}/artifacts/bazel:7'
+ - '${_IMAGE_NAME}:latest'
+ - '${_IMAGE_NAME}:7.6.1'
+ - '${_IMAGE_NAME}:7.6'
+ - '${_IMAGE_NAME}:7'
+
+substitutions:
+  _IMAGE_NAME: '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/stable/bazel'
 
 timeout: 2400s

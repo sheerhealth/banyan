@@ -11,7 +11,7 @@ steps:
 
 substitutions:
   _PLATFORMS: 'linux/amd64,linux/arm64'
-  _IMAGE_NAME: '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/artifacts/firebase-emulators'
+  _IMAGE_NAME: '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/stable/firebase-emulators'
   _TAG: 'latest'
   _VERSION: 'latest'
 
