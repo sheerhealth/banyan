@@ -25,6 +25,6 @@ images:
  - '${_IMAGE_NAME}:7'
 
 substitutions:
-  _IMAGE_NAME: '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/stable/bazel'
+  _IMAGE_NAME: 'us-central1-docker.pkg.dev/big-vertex-372416/stable/bazel'
 
 timeout: 2400s
