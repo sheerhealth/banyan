@@ -50,3 +50,16 @@ func ValuesOrDefaults[T any](values []*T) []T {
 
 	return result
 }
+
+// Compares the values of two pointers for equality, considering nils.
+func ValueEqual[T comparable](a, b *T) bool {
+	if a == nil && b == nil {
+		return true
+	}
+
+	if a == nil || b == nil {
+		return false
+	}
+
+	return *a == *b
+}

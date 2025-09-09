@@ -100,3 +100,33 @@ func TestValuesOrDefaults(t *testing.T) {
 		}
 	}
 }
+
+func TestValueEqual(t *testing.T) {
+	t.Parallel()
+
+	a := To(5)
+	b := To(5)
+	c := To(10)
+	var n1, n2 *int
+
+	tests := []struct {
+		name string
+		a, b *int
+		want bool
+	}{
+		{"both nil", n1, n2, true},
+		{"a nil", n1, a, false},
+		{"b nil", b, n2, false},
+		{"equal", a, b, true},
+		{"not equal", a, c, false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if got := ValueEqual(tt.a, tt.b); got != tt.want {
+				t.Errorf("ValueEqual() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
