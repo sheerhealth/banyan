@@ -1,0 +1,50 @@
+name: bazel
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'images/bazel/**'
+      - '.github/actions/docker-build-push/**'
+      - '.github/workflows/bazel.yml'
+  push:
+    tags:
+      - 'bazel/**'
+
+jobs:
+  build-and-push:
+    name: build and push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine Bazel Version
+        id: bazel_version_step
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "version=latest" >> "$GITHUB_OUTPUT"
+          else
+            # This block executes on a push event matching tags: ['bazel/**']
+            # github.ref_name will be like "bazel/v0.5.0"
+            RAW_TAG="${{ github.ref_name }}"
+            VERSION="${RAW_TAG#bazel/}" # Shell parameter expansion
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build and Push
+        uses: ./.github/actions/docker-build-push
+        with:
+          image_name: 'bazel'
+          image_description: 'Bazel builder'
+          context_path: 'images/bazel'
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
+          do_push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/bazel/') }}
+          git_tag_prefix_for_version: 'bazel/'
+          dependency_build_arg_name: 'BAZEL_VERSION'
+          dependency_build_arg_value: ${{ steps.bazel_version_step.outputs.version }}
