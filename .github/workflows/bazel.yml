@@ -44,6 +44,7 @@ jobs:
           image_description: 'Bazel builder'
           context_path: 'images/bazel'
           registry_password: ${{ secrets.GITHUB_TOKEN }}
+          platforms: 'linux/amd64'
           do_push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/bazel/') }}
           git_tag_prefix_for_version: 'bazel/'
           dependency_build_arg_name: 'BAZEL_VERSION'
