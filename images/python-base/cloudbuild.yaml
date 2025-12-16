@@ -1,0 +1,15 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    id: setup-buildx
+    args: ['buildx', 'create', '--driver', 'docker-container', '--name', 'container', '--use']
+  - name: 'gcr.io/cloud-builders/docker'
+    id: build-python-base
+    dir: 'images/python-base'
+    args: ['buildx', 'build', '--platform', 'linux/arm64/v8,linux/amd64', '-t', '${_IMAGE_NAME}:${_TAG}', '--push', '.']
+substitutions:
+    _LOCATION: 'us-central1'
+    _IMAGE_NAME: '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/stable/python-base'
+    _TAG: 'latest'
+options:
+  dynamicSubstitutions: true
+  substitution_option: 'ALLOW_LOOSE'
