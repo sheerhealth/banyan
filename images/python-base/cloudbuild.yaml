@@ -4,7 +4,12 @@ steps:
     args: ['buildx', 'create', '--driver', 'docker-container', '--name', 'container', '--use']
   - name: 'gcr.io/cloud-builders/docker'
     id: build-python-base
-    dir: 'containers/python-base'
-    args: ['buildx', 'build', '--platform', 'linux/arm64/v8,linux/amd64', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/artifacts/python-base:${_DATE_TAG}', '--push', '.']
+    dir: 'images/python-base'
+    args: ['buildx', 'build', '--platform', 'linux/arm64/v8,linux/amd64', '-t', '${_IMAGE_NAME}:${_TAG}', '--push', '.']
+substitutions:
+    _LOCATION: 'us-central1'
+    _IMAGE_NAME: '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/stable/python-base'
+    _TAG: 'latest'
 options:
-  logging: GCS_ONLY
+  dynamicSubstitutions: true
+  substitution_option: 'ALLOW_LOOSE'
