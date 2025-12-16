@@ -1,0 +1,10 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    id: setup-buildx
+    args: ['buildx', 'create', '--driver', 'docker-container', '--name', 'container', '--use']
+  - name: 'gcr.io/cloud-builders/docker'
+    id: build-python-base
+    dir: 'containers/python-base'
+    args: ['buildx', 'build', '--platform', 'linux/arm64/v8,linux/amd64', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/artifacts/python-base:${_DATE_TAG}', '--push', '.']
+options:
+  logging: GCS_ONLY
