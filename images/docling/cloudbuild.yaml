@@ -7,7 +7,6 @@ steps:
     dir: 'images/docling'
     args: ['buildx', 'build', '--platform', 'linux/arm64/v8,linux/amd64', '-t', '${_IMAGE_NAME}:${_TAG}', '--push', '.']
 substitutions:
-    _LOCATION: 'us-central1'
     _IMAGE_NAME: '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/stable/docling'
     _TAG: 'latest'
 options:

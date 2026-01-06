@@ -1,1 +1,1 @@
-This pushes a verbatim copy the latest docling-serve image to our registry, as part of a prototype OCR service.
+This pushes a verbatim copy of the latest docling-serve image to our registry, as part of a prototype OCR service.
